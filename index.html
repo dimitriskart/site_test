@@ -9,7 +9,6 @@
 html,body{height:100%;margin:0;background:#000}
 #instructions{position:fixed;left:8px;top:8px;z-index:10;color:#fff;background:rgba(0,0,0,.5);padding:8px;border-radius:6px;font-family:system-ui,Segoe UI,Roboto,Arial}
 </style>
-<!-- A-Frame and AR.js (marker-based) -->
 <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
 <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 </head>
@@ -17,48 +16,23 @@ html,body{height:100%;margin:0;background:#000}
 <div id="instructions">Allow camera permission — then point the camera at a printed <strong>Hiro marker</strong> to see the smiley. <br><small>Tip: print the marker at ~10–20 cm wide for testing.</small></div>
 
 
-<!-- hidden DOM image used as the texture for the AR object -->
-<img id="smiley-img" crossorigin="anonymous" style="display:none" />
+<!-- Use a small PNG for mobile compatibility -->
+<img id="smiley-img" src="https://i.imgur.com/9tP7b2P.png" crossorigin="anonymous" style="display:none" />
 
 
-<a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false;'>
-<!-- Use the default 'hiro' marker pattern. Place the object as a flat image that always faces the camera -->
+<a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false; facingMode: environment;'>
 <a-marker type="pattern" url="https://raw.githack.com/AR-js-org/AR.js/master/three.js/data/hiro.patt">
-<!-- a-plane or a-image that uses the hidden DOM image as its texture -->
 <a-image src="#smiley-img" position="0 0 0" rotation="-90 0 0" width="1" height="1" look-at="#camera"></a-image>
 </a-marker>
-
-
-<!-- camera entity required for A-Frame/AR.js. Give it an id so elements can look-at it -->
 <a-entity id="camera" camera></a-entity>
 </a-scene>
 
 
 <script>
-// Create a simple SVG smiley and assign it to the hidden img's src as a data URL.
-// This avoids external image hosting and keeps the file single-file.
-const svg = `
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'>
-<rect width='100%' height='100%' fill='transparent'/>
-<circle cx='100' cy='100' r='90' fill='%23FFD54A' stroke='%23F9A825' stroke-width='6'/>
-<circle cx='70' cy='80' r='12' fill='%23000'/>
-<circle cx='130' cy='80' r='12' fill='%23000'/>
-<path d='M60 120 Q100 155 140 120' stroke='%23000' stroke-width='8' fill='none' stroke-linecap='round' stroke-linejoin='round'/>
-</svg>
-`;
-
-
-// Put the SVG into the image as a data URL (URL-encoded) so it works cross-browser.
-const img = document.getElementById('smiley-img');
-img.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
-
-
-// Fallback: show a helpful message if getUserMedia is blocked or not available.
 async function checkCamera() {
 try {
 if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('Camera API not supported');
-// attempt permission prompt to surface errors early
-await navigator.mediaDevices.getUserMedia({ video: true });
+await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
 } catch (err) {
 const el = document.getElementById('instructions');
 el.innerHTML = 'Camera access failed or blocked. Make sure you allow camera permission and open this page via HTTPS (or on localhost).<br><small>' + (err.message || err) + '</small>';
