@@ -1,65 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR Image Tracking</title>
-    <!-- Use Tailwind CSS for modern and responsive styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            @apply bg-gray-900 text-white flex items-center justify-center min-h-screen p-4 overflow-hidden;
-        }
-        /* AR.js and A-Frame handle the main viewport, so we just set the body styles */
-        #ar-scene {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        .instructions-overlay {
-            @apply absolute bottom-8 left-1/2 transform -translate-x-1/2 p-4 bg-gray-800 rounded-xl shadow-2xl text-center text-sm font-medium z-10 max-w-sm;
-        }
-    </style>
-</head>
-<body>
-    <!-- The A-Frame scene where the augmented reality happens -->
-    <!-- The `arjs` component tells A-Frame to use AR.js for image tracking -->
-    <!-- The `pattern` attribute points to our image target file -->
-    <a-scene embedded vr-mode-ui="enabled: false" arjs="sourceType: webcam; sourceWidth:640; sourceHeight:480; displayWidth: 640; displayHeight: 480; debugUIEnabled: false;">
-
-        <!-- This is the container for our virtual object -->
-        <!-- The `a-marker` component tells AR.js to look for a specific image marker -->
-        <!-- We use `type="pattern"` and `url` to point to the .patt file created from our target image -->
-        <!-- NOTE: For this to work, you must generate a .patt file from your `YOUR_TARGET_FILE.mind` image. -->
-        <!-- This is a placeholder, as the .mind file is not a standard format. -->
-        <!-- The name `YOUR_TARGET_FILE.patt` is used to demonstrate the concept. -->
-        <!-- You would replace this with the actual path to your marker file. -->
-        <a-marker type="pattern" url="YOUR_TARGET_FILE.mind">
-            <!-- This is the 3D smiley face object (a sphere and two eyes) -->
-            <a-sphere position="0 0.5 0" radius="1.2" color="#FFD700" rotation="90 0 0" material="metalness: 0.8; roughness: 0.2;" animation="property: rotation; to: 360 360 360; loop: true; dur: 5000; easing: linear;"></a-sphere>
-            <a-sphere position="-0.4 0.9 1.1" radius="0.2" color="#000000" material="metalness: 0.8; roughness: 0.2;"></a-sphere>
-            <a-sphere position="0.4 0.9 1.1" radius="0.2" color="#000000" material="metalness: 0.8; roughness: 0.2;"></a-sphere>
-            <a-ring position="0 0.1 1.1" radius-outer="0.8" radius-inner="0.6" color="#000000" rotation="90 0 0"></a-ring>
-        </a-marker>
-
-        <!-- A simple camera that sees the real world -->
-        <a-entity camera></a-entity>
-
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/dist/mindar-image.prod.js"></script>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  </head>
+  <body>
+    <a-scene mindar-image="imageTargetSrc: ./targets.mind;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-plane color="blue" opaciy="0.5" position="0 0 0" height="0.552" width="1" rotation="0 0 0"></a-plane>
+      </a-entity>
     </a-scene>
-
-    <!-- Overlay with instructions for the user -->
-    <div class="instructions-overlay">
-        <p>Point your camera at the target image.</p>
-        <p>A smiley face will appear on top of it!</p>
-    </div>
-
-    <!-- The A-Frame library - handles the 3D scene -->
-    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-
-    <!-- The AR.js library for A-Frame - handles the AR magic -->
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-</body>
+  </body>
 </html>
