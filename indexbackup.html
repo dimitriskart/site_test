@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>AR Smiley — Image Tracking</title>
+  <meta name="description" content="Point your phone camera at the poster on the wall to see a smiley appear." />
+  <style>
+    html,body{height:100%;margin:0;background:#000}
+    #instructions{position:fixed;left:8px;top:8px;z-index:10;color:#fff;background:rgba(0,0,0,.5);padding:8px;border-radius:6px;font-family:system-ui,Segoe UI,Roboto,Arial}
+    #startButton{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:16px 32px;font-size:20px;font-family:system-ui,Segoe UI,Roboto,Arial;background:#fff;border-radius:8px;border:none;cursor:pointer;z-index:10}
+    #error-message{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:16px;font-size:16px;font-family:system-ui,Segoe UI,Roboto,Arial;background:red;color:white;border-radius:8px;z-index:100}
+  </style>
+  <script src="mindar-image-aframe.prod.js"></script>
+  <script src="aframe.min.js"></script>
+</head>
+<body>
+  <div id="instructions">Point your phone camera at the poster to see the smiley.</div>
+  <button id="startButton">Tap to Start AR</button>
+  <div id="error-message"></div>
+
+  <img id="smiley-img" src="https://i.imgur.com/9tP7b2P.png" crossorigin="anonymous" style="display:none" />
+
+  <a-scene id="ar-scene" mindar-image="imageTargetSrc: YOUR_TARGET_FILE.mind; autoStart: false" embedded color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+    <a-camera active="false" look-controls="enabled: false"></a-camera>
+
+    <a-entity mindar-image-target="targetIndex: 0">
+      <a-image src="#smiley-img" position="0 0 0" rotation="-90 0 0" width="1" height="1" look-at="#camera"></a-image>
+    </a-entity>
+  </a-scene>
+
+  <script>
+    const startButton = document.getElementById('startButton');
+    const arScene = document.getElementById('ar-scene');
+    const errorMessage = document.getElementById('error-message');
+
+    setTimeout(() => {
+      if (typeof AFRAME === 'undefined' || typeof AFRAME.components['mindar-image'] === 'undefined') {
+        errorMessage.style.display = 'block';
+        errorMessage.textContent = 'Error: The AR libraries could not be loaded. Check that mindar-image-aframe.prod.js and aframe.min.js are in the same folder as this file.';
+        startButton.style.display = 'none';
+      }
+    }, 3000);
+
+    startButton.addEventListener('click', () => {
+      startButton.style.display = 'none';
+      errorMessage.style.display = 'none';
+      arScene.setAttribute('mindar-image', 'autoStart', true);
+    });
+  </script>
+</body>
+</html>
