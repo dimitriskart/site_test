@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-<title>AR Smiley — point at the marker</title>
+<title>AR Smiley — Mobile Optimized</title>
 <meta name="description" content="Point your phone camera at the printed marker on the wall to see a smiley appear." />
 <style>
 html,body{height:100%;margin:0;background:#000}
@@ -13,14 +13,14 @@ html,body{height:100%;margin:0;background:#000}
 <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 </head>
 <body>
-<div id="instructions">Allow camera permission — then point the camera at a printed <strong>Hiro marker</strong> to see the smiley. <br><small>Tip: print the marker at ~10–20 cm wide for testing.</small></div>
+<div id="instructions">Allow camera permission, then point the camera at a printed <strong>Hiro marker</strong> to see the smiley.<br><small>Tip: print the marker at ~10–20 cm wide for testing.</small></div>
 
 
-<!-- Use a small PNG for mobile compatibility -->
+<!-- Use a small hosted PNG for mobile compatibility -->
 <img id="smiley-img" src="https://i.imgur.com/9tP7b2P.png" crossorigin="anonymous" style="display:none" />
 
 
-<a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false; facingMode: environment;'>
+<a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false; facingMode: environment; sourceWidth: 640; sourceHeight: 480;'>
 <a-marker type="pattern" url="https://raw.githack.com/AR-js-org/AR.js/master/three.js/data/hiro.patt">
 <a-image src="#smiley-img" position="0 0 0" rotation="-90 0 0" width="1" height="1" look-at="#camera"></a-image>
 </a-marker>
@@ -32,10 +32,10 @@ html,body{height:100%;margin:0;background:#000}
 async function checkCamera() {
 try {
 if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('Camera API not supported');
-await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: 640, height: 480 } });
 } catch (err) {
 const el = document.getElementById('instructions');
-el.innerHTML = 'Camera access failed or blocked. Make sure you allow camera permission and open this page via HTTPS (or on localhost).<br><small>' + (err.message || err) + '</small>';
+el.innerHTML = 'Camera access failed or blocked. Open this page via HTTPS (or localhost) and allow camera permission.<br><small>' + (err.message || err) + '</small>';
 }
 }
 checkCamera();
